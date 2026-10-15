@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>即兴伴奏教学 - 伴奏织体形态示例</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --border: #cbd5e1;
+            --key-active: #f59e0b;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text);
+            margin-top: 0;
+            margin-bottom: 40px;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 40px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #475569;
+        }
+
+        select {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            font-size: 1rem;
+            background: var(--surface);
+            cursor: pointer;
+            outline: none;
+            min-width: 380px;
+            transition: border-color 0.2s;
+            font-weight: 500;
+        }
+
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        button {
+            padding: 12px 32px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #pauseBtn {
+            background: #64748b;
+        }
+
+        #pauseBtn:hover {
+            background: #475569;
+        }
+
+        /* 琴键外框 */
+        .piano-wrapper {
+            overflow-x: auto;
+            padding: 20px 20px 30px 20px;
+            display: flex;
+            justify-content: center;
+            background: #e2e8f0;
+            border-radius: 12px;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 琴键容器 */
+        .piano {
+            display: flex;
+            position: relative;
+            height: 220px;
+            background: #333;
+            border-radius: 4px;
+            padding: 0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), inset 0 2px 5px rgba(0,0,0,0.8);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .key {
+            position: relative;
+            transition: background 0.05s, transform 0.05s, box-shadow 0.05s;
+            cursor: pointer;
+            box-sizing: border-box;
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* 白键样式 */
+        .key.white {
+            width: 44px;
+            height: 100%;
+            background: linear-gradient(to bottom, #fff 0%, #f0f0f0 100%);
+            border-right: 1px solid #a0a0a0;
+            border-left: 1px solid #a0a0a0;
+            border-bottom: 4px solid #d0d0d0;
+            z-index: 1;
+            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.05);
+        }
+
+        /* 白键按下效果 */
+        .key.white.active {
+            background: var(--key-active);
+            border-bottom: 2px solid #d97706;
+            transform: translateY(2px);
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        /* 黑键样式 */
+        .key.black {
+            width: 28px;
+            height: 65%;
+            background: linear-gradient(to bottom, #333 0%, #000 100%);
+            position: absolute;
+            z-index: 2;
+            border: 1px solid #000;
+            border-top: none;
+            border-bottom: 5px solid #111;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 -2px 3px rgba(255,255,255,0.15);
+        }
+
+        /* 黑键按下效果 */
+        .key.black.active {
+            background: var(--key-active);
+            border-bottom: 3px solid #b45309;
+            transform: translateY(2px);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* 简谱区域 */
+        .jianpu-section {
+            margin-top: 30px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .jianpu-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .time-signature {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: #dbeafe;
+            padding: 4px 14px;
+            border-radius: 6px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .jianpu-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            font-family: 'Times New Roman', 'Courier New', monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+            align-items: center;
+            min-height: 80px;
+        }
+
+        .jianpu-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .jianpu-bar .bar-label {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        /* 一拍 */
+        .beat {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: relative;
+        }
+
+        /* 每个音符 */
+        .jianpu-note {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            position: relative;
+            padding: 2px 4px;
+            min-width: 20px;
+        }
+
+        .jianpu-note .note-symbol {
+            font-size: 1.4rem;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        /* 增时线 */
+        .jianpu-note .dash-line {
+            font-size: 1.4rem;
+            color: var(--text);
+            line-height: 1;
+            margin-left: 2px;
+        }
+
+        .jianpu-note.rest .note-symbol {
+            color: #94a3b8;
+        }
+
+        /* 单下划线 = 八分音符 */
+        .underline-single {
+            position: relative;
+        }
+
+        .underline-single::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--text);
+        }
+
+        /* 双下划线 = 十六分音符 */
+        .underline-double {
+            position: relative;
+        }
+
+        .underline-double::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--text);
+            box-shadow: 0 4px 0 var(--text);
+        }
+
+        /* 隐藏提示行 */
+        .info-tip {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎹 即兴伴奏教学 - 伴奏织体形态示例</h1>
+
+    <div class="controls">
+        <div class="control-group">
+            <label for="keySelect">调式调性选择</label>
+            <select id="keySelect">
+                <option value="C">C 大调</option>
+                <option value="G">G 大调</option>
+                <option value="D">D 大调</option>
+                <option value="A">A 大调</option>
+                <option value="E">E 大调</option>
+                <option value="B">B 大调</option>
+                <option value="F">F 大调</option>
+                <option value="Bb">Bb 大调</option>
+                <option value="Eb">Eb 大调</option>
+                <option value="Ab">Ab 大调</option>
+                <option value="Db">Db 大调</option>
+                <option value="Gb">Gb 大调</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="patternSelect">伴奏织体形态</label>
+            <select id="patternSelect">
+                <option value="arpeggio_7" selected>分解和弦伴奏织体示例7</option>
+                <option value="arpeggio_6">分解和弦伴奏织体示例6</option>
+                <option value="arpeggio_5">分解和弦伴奏织体示例5</option>
+                <option value="arpeggio_4">分解和弦伴奏织体示例4</option>
+                <option value="arpeggio_3">分解和弦伴奏织体示例3</option>
+                <option value="arpeggio_2">分解和弦伴奏织体示例2</option>
+                <option value="arpeggio_1">分解和弦伴奏织体示例1</option>
+                <option value="four_four_bass_chord">4/4拍低音+柱式和弦</option>
+                <option value="bass_chord">2/4拍低音+柱式和弦</option>
+                <option value="half_octave">半分解和弦伴奏织体示列1</option>
+                <option value="half_advanced">半分解和弦伴奏织体示列2</option>
+                <option value="half_flow">半分解和弦伴奏织体示列3</option>
+                <option value="half_basic">半分解和弦伴奏织体示列4</option>
+                <option value="half_double">半分解和弦伴奏织体示列5</option>
+            </select>
+        </div>
+
+        <div class="button-group">
+            <button id="playBtn">▶ 开始演示</button>
+            <button id="pauseBtn" disabled>⏸ 暂停</button>
+        </div>
+    </div>
+
+    <!-- 琴键动画区 -->
+    <div class="piano-wrapper">
+        <div class="piano" id="piano"></div>
+    </div>
+
+    <!-- 简谱区域 -->
+    <div class="jianpu-section">
+        <div class="jianpu-title">
+            📝 伴奏音型节奏谱
+            <span class="time-signature" id="timeSignature">2/4</span>
+        </div>
+        <div class="jianpu-display" id="jianpuDisplay"></div>
+    </div>
+</div>
+
+<script>
+    // --- 基础音乐数据与逻辑 ---
+
+    const semitoneToNote = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+    const startMidi = 24; 
+    const endMidi = 84;   
+
+    const WHITE_KEY_WIDTH = 44; 
+
+    // 【核心修改】调式调性映射表（新增 B、Ab、Db、Gb 大调）
+    const keyRoots = {
+        'C': 0, 
+        'G': 7, 
+        'D': 2, 
+        'A': 9, 
+        'E': 4, 
+        'B': 11,        // 新增 B 大调
+        'F': 5, 
+        'Bb': 10, 
+        'Eb': 3,
+        'Ab': 8,        // 新增 Ab 大调
+        'Db': 1,        // 新增 Db 大调
+        'Gb': 6         // 新增 Gb 大调
+    };
+
+    // --- 音频引擎 ---
+    let audioCtx = null;
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function playNote(midi, duration = 0.5, volume = 0.25) {
+        if (!audioCtx) return;
+        const freq = 440 * Math.pow(2, (midi - 69) / 12);
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        osc.type = 'triangle'; 
+        osc.frequency.value = freq;
+
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    // --- 琴键 UI 生成 ---
+    const pianoEl = document.getElementById('piano');
+    
+    function buildPiano() {
+        pianoEl.innerHTML = '';
+        let whiteKeysCount = 0;
+        for (let midi = startMidi; midi <= endMidi; midi++) {
+            if (!semitoneToNote[midi % 12].includes('#')) whiteKeysCount++;
+        }
+        
+        pianoEl.style.width = `${whiteKeysCount * WHITE_KEY_WIDTH}px`;
+        let whiteKeyIndex = 0;
+
+        for (let midi = startMidi; midi <= endMidi; midi++) {
+            const noteName = semitoneToNote[midi % 12];
+            const isBlack = noteName.includes('#');
+            
+            const keyEl = document.createElement('div');
+            keyEl.className = `key ${isBlack ? 'black' : 'white'}`;
+            keyEl.dataset.midi = midi;
+
+            if (isBlack) {
+                keyEl.style.left = `${(whiteKeyIndex * WHITE_KEY_WIDTH) - 14 + 2}px`;
+            } else {
+                whiteKeyIndex++;
+            }
+
+            keyEl.addEventListener('mousedown', () => {
+                initAudio();
+                playNote(midi, 0.8);
+                keyEl.classList.add('active');
+                setTimeout(() => keyEl.classList.remove('active'), 300);
+            });
+
+            pianoEl.appendChild(keyEl);
+        }
+    }
+
+    function highlightKey(midi, visualDuration = 300) {
+        const keyEl = document.querySelector(`.key[data-midi="${midi}"]`);
+        if (keyEl) {
+            keyEl.classList.add('active');
+            setTimeout(() => keyEl.classList.remove('active'), visualDuration);
+        }
+    }
+
+    // --- 【绝对音高硬编码】C大调各形态的精确MIDI值 ---
+
+    const cMajorPitchMap_Arpeggio7 = {
+        'I_notes': [48, 52, 55, 52],
+        'IV_notes': [53, 57, 60, 57],
+        'V_notes': [55, 59, 62, 59],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_Arpeggio6 = {
+        'I_notes': [48, 55, 60, 64, 60, 55],
+        'IV_notes': [53, 60, 65, 69, 65, 60],
+        'V_notes': [55, 62, 67, 71, 67, 62],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_Arpeggio5 = {
+        'I_notes': [48, 55, 60],
+        'IV_notes': [53, 60, 65],
+        'V_notes': [55, 62, 67],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_Arpeggio4 = {
+        'I_notes': [48, 55, 60, 55],
+        'IV_notes': [53, 60, 65, 60],
+        'V_notes': [55, 62, 67, 62],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_Arpeggio3 = {
+        'I_notes': [36, 43, 48, 52, 55, 60, 55, 52],
+        'IV_notes': [41, 48, 53, 57, 60, 65, 60, 57],
+        'V_notes': [43, 50, 55, 59, 62, 67, 62, 59],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_Arpeggio2 = {
+        'I_notes': [36, 43, 48, 52, 55, 52, 48, 43],
+        'IV_notes': [41, 48, 53, 57, 60, 57, 53, 48],
+        'V_notes': [43, 50, 55, 59, 62, 59, 55, 50],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_Arpeggio = {
+        'I_notes': [48, 55, 52, 55],
+        'IV_notes': [48, 57, 53, 57],
+        'V_notes': [47, 55, 50, 55],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_FourFour = {
+        'I_bass': 48, 'I_chord1': [52, 55, 60], 'I_chord2': [55, 60, 64], 'I_chord3': [52, 55, 60],
+        'IV_bass': 41, 'IV_chord1': [48, 53, 57], 'IV_chord2': [53, 57, 60], 'IV_chord3': [48, 53, 57],
+        'V_bass': 43, 'V_chord1': [50, 55, 59], 'V_chord2': [55, 59, 62], 'V_chord3': [50, 55, 59],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_BassChord = {
+        'I_bass': 36, 'I_chord': [43, 48, 52],
+        'IV_bass': 41, 'IV_chord': [45, 48, 53],
+        'V_bass': 43, 'V_chord': [47, 50, 55],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_P5 = {
+        'I_bass': 48, 'I_single': 55, 'I_dyad': [60, 64],
+        'IV_bass': 53, 'IV_single': 60, 'IV_dyad': [65, 69],
+        'V_bass': 55, 'V_single': 62, 'V_dyad': [67, 71],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_P4 = {
+        'I_bass': 48, 'I_single': 55, 'I_dyad': [60, 64], 'I_dyad2': [64, 67],
+        'IV_bass': 53, 'IV_single': 60, 'IV_dyad': [65, 69], 'IV_dyad2': [69, 72],
+        'V_bass': 55, 'V_single': 62, 'V_dyad': [67, 71], 'V_dyad2': [71, 74],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_P3 = {
+        'I_bass1': 48, 'I_bass2': 43, 'I_dyad': [52, 55],
+        'IV_bass1': 53, 'IV_bass2': 48, 'IV_dyad': [57, 60],
+        'V_bass1': 55, 'V_bass2': 50, 'V_dyad': [59, 62],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_P1 = {
+        'I_bass': 48, 'I_dyad': [52, 55],
+        'IV_bass': 53, 'IV_dyad': [57, 60],
+        'V_bass': 55, 'V_dyad': [59, 62],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    const cMajorPitchMap_P2 = {
+        'I_bass': 48, 'I_dyad': [52, 55],
+        'IV_bass': 53, 'IV_dyad': [57, 60],
+        'V_bass': 55, 'V_dyad': [59, 62],
+        'I_final_chord': [48, 52, 55]
+    };
+
+    function transposeMidi(cMajorMidi, key) {
+        const offset = keyRoots[key];
+        return cMajorMidi + offset;
+    }
+
+    // --- 伴奏织体数据生成 ---
+    function generatePatternSteps(key, pattern) {
+        const steps = [];
+        const progression = ['I', 'IV', 'V', 'I'];
+
+        const isFourFour = (
+            pattern === 'four_four_bass_chord' || 
+            pattern === 'arpeggio_2' || 
+            pattern === 'arpeggio_3' || 
+            pattern === 'half_octave' ||
+            pattern === 'half_advanced'
+        );
+        const totalDuration = isFourFour ? 8000 : 6000;
+        const barDuration = totalDuration / 4;
+
+        if (pattern.startsWith('arpeggio')) {
+            let map;
+            if (pattern === 'arpeggio_7') map = cMajorPitchMap_Arpeggio7;
+            else if (pattern === 'arpeggio_6') map = cMajorPitchMap_Arpeggio6;
+            else if (pattern === 'arpeggio_5') map = cMajorPitchMap_Arpeggio5;
+            else if (pattern === 'arpeggio_4') map = cMajorPitchMap_Arpeggio4;
+            else if (pattern === 'arpeggio_3') map = cMajorPitchMap_Arpeggio3;
+            else if (pattern === 'arpeggio_2') map = cMajorPitchMap_Arpeggio2;
+            else if (pattern === 'arpeggio_1') map = cMajorPitchMap_Arpeggio;
+
+            const notesCount = map['I_notes'].length;
+            const noteDuration = barDuration / notesCount;
+
+            progression.forEach((chordName) => {
+                const notes = map[chordName + '_notes'];
+                if (!notes) return;
+                notes.forEach(midi => {
+                    steps.push({ midis: [transposeMidi(midi, key)], duration: noteDuration });
+                });
+            });
+
+            const finalChord = map['I_final_chord'].map(m => transposeMidi(m, key));
+            steps.push({ midis: finalChord, duration: barDuration });
+        }
+        else if (pattern === 'four_four_bass_chord') {
+            const map = cMajorPitchMap_FourFour;
+            progression.forEach((chordName, index) => {
+                if (chordName === 'I' && index === 3) {
+                    const chord = map['I_final_chord'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: chord, duration: barDuration });
+                } else {
+                    const bass = transposeMidi(map[chordName + '_bass'], key);
+                    const chord1 = map[chordName + '_chord1'].map(m => transposeMidi(m, key));
+                    const chord2 = map[chordName + '_chord2'].map(m => transposeMidi(m, key));
+                    const chord3 = map[chordName + '_chord3'].map(m => transposeMidi(m, key));
+
+                    steps.push({ midis: [bass], duration: barDuration / 4 });
+                    steps.push({ midis: chord1, duration: barDuration / 4 });
+                    steps.push({ midis: chord2, duration: barDuration / 4 });
+                    steps.push({ midis: chord3, duration: barDuration / 4 });
+                }
+            });
+        }
+        else if (pattern === 'bass_chord') {
+            const map = cMajorPitchMap_BassChord;
+            const totalDur24 = 6000;
+            const barDur24 = totalDur24 / 4;
+            progression.forEach((chordName, index) => {
+                if (chordName === 'I' && index === 3) {
+                    const finalChord = map['I_final_chord'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: finalChord, duration: barDur24 });
+                } else {
+                    const bass = transposeMidi(map[chordName + '_bass'], key);
+                    const chord = map[chordName + '_chord'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: [bass], duration: barDur24 / 2 });
+                    steps.push({ midis: chord, duration: barDur24 / 2 });
+                }
+            });
+        }
+        else if (pattern === 'half_octave') {
+            const map = cMajorPitchMap_P5;
+            progression.forEach((chordName, index) => {
+                if (chordName === 'I' && index === 3) {
+                    const finalChord = map['I_final_chord'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: finalChord, duration: barDuration });
+                } else {
+                    const bass = transposeMidi(map[chordName + '_bass'], key);
+                    const single = transposeMidi(map[chordName + '_single'], key);
+                    const dyad = map[chordName + '_dyad'].map(m => transposeMidi(m, key));
+                    const eightNote = barDuration / 8;
+                    steps.push({ midis: [bass], duration: eightNote });
+                    steps.push({ midis: [single], duration: eightNote });
+                    steps.push({ midis: dyad, duration: eightNote });
+                    steps.push({ midis: [single], duration: eightNote });
+                    steps.push({ midis: [bass], duration: eightNote });
+                    steps.push({ midis: [single], duration: eightNote });
+                    steps.push({ midis: dyad, duration: eightNote });
+                    steps.push({ midis: [single], duration: eightNote });
+                }
+            });
+        }
+        else if (pattern === 'half_advanced') {
+            const map = cMajorPitchMap_P4;
+            progression.forEach((chordName, index) => {
+                if (chordName === 'I' && index === 3) {
+                    const finalChord = map['I_final_chord'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: finalChord, duration: barDuration });
+                } else {
+                    const bass = transposeMidi(map[chordName + '_bass'], key);
+                    const single = transposeMidi(map[chordName + '_single'], key);
+                    const dyad = map[chordName + '_dyad'].map(m => transposeMidi(m, key));
+                    const dyad2 = map[chordName + '_dyad2'].map(m => transposeMidi(m, key));
+                    const eightNote = barDuration / 8;
+                    steps.push({ midis: [bass], duration: eightNote });
+                    steps.push({ midis: [single], duration: eightNote });
+                    steps.push({ midis: dyad, duration: eightNote });
+                    steps.push({ midis: [single], duration: eightNote });
+                    steps.push({ midis: dyad2, duration: eightNote });
+                    steps.push({ midis: [single], duration: eightNote });
+                    steps.push({ midis: dyad, duration: eightNote });
+                    steps.push({ midis: [single], duration: eightNote });
+                }
+            });
+        }
+        else if (pattern === 'half_flow') {
+            const map = cMajorPitchMap_P3;
+            const totalDur24 = 6000;
+            const barDur24 = totalDur24 / 4;
+            progression.forEach((chordName, index) => {
+                if (chordName === 'I' && index === 3) {
+                    const finalChord = map['I_final_chord'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: finalChord, duration: barDur24 });
+                } else {
+                    const bass1 = transposeMidi(map[chordName + '_bass1'], key);
+                    const bass2 = transposeMidi(map[chordName + '_bass2'], key);
+                    const dyad = map[chordName + '_dyad'].map(m => transposeMidi(m, key));
+                    const eightNote = barDur24 / 4;
+                    steps.push({ midis: [bass1], duration: eightNote });
+                    steps.push({ midis: dyad, duration: eightNote });
+                    steps.push({ midis: [bass2], duration: eightNote });
+                    steps.push({ midis: dyad, duration: eightNote });
+                }
+            });
+        }
+        else if (pattern === 'half_basic') {
+            const map = cMajorPitchMap_P1;
+            const totalDur24 = 6000;
+            const barDur24 = totalDur24 / 4;
+            progression.forEach((chordName, index) => {
+                if (chordName === 'I' && index === 3) {
+                    const finalChord = map['I_final_chord'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: finalChord, duration: barDur24 });
+                } else {
+                    const bass = transposeMidi(map[chordName + '_bass'], key);
+                    const dyad = map[chordName + '_dyad'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: [bass], duration: barDur24 / 2 });
+                    steps.push({ midis: dyad, duration: barDur24 / 2 });
+                }
+            });
+        }
+        else if (pattern === 'half_double') {
+            const map = cMajorPitchMap_P2;
+            const totalDur24 = 6000;
+            const barDur24 = totalDur24 / 4;
+            progression.forEach((chordName, index) => {
+                if (chordName === 'I' && index === 3) {
+                    const finalChord = map['I_final_chord'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: finalChord, duration: barDur24 });
+                } else {
+                    const bass = transposeMidi(map[chordName + '_bass'], key);
+                    const dyad = map[chordName + '_dyad'].map(m => transposeMidi(m, key));
+                    steps.push({ midis: [bass], duration: barDur24 / 2 });
+                    steps.push({ midis: dyad, duration: barDur24 / 4 });
+                    steps.push({ midis: dyad, duration: barDur24 / 4 });
+                }
+            });
+        }
+
+        return steps;
+    }
+
+    // --- 节奏谱生成（标准简谱记谱法）---
+    function renderRhythm(key, pattern) {
+        const display = document.getElementById('jianpuDisplay');
+        const timeSig = document.getElementById('timeSignature');
+        display.innerHTML = '';
+
+        let timeSignature = '2/4';
+        let bars = [];
+
+        function makeFinalBar(timeSig) {
+            if (timeSig === '2/4') return [[['X','half',1]]];
+            if (timeSig === '3/4') return [[['X','whole',2]]];
+            if (timeSig === '4/4') return [[['X','whole',3]]];
+            return [[['X','quarter',0]]];
+        }
+
+        if (pattern === 'arpeggio_7') {
+            timeSignature = '2/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'arpeggio_6') {
+            timeSignature = '3/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'arpeggio_5') {
+            timeSignature = '2/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','quarter']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'arpeggio_4') {
+            timeSignature = '2/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'arpeggio_3') {
+            timeSignature = '4/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'arpeggio_2') {
+            timeSignature = '4/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'arpeggio_1') {
+            timeSignature = '2/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'four_four_bass_chord') {
+            timeSignature = '4/4';
+            const normalBar = [[['X','quarter']], [['X','quarter']], [['X','quarter']], [['X','quarter']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'bass_chord') {
+            timeSignature = '2/4';
+            const normalBar = [[['X','quarter']], [['X','quarter']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'half_octave') {
+            timeSignature = '4/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'half_advanced') {
+            timeSignature = '4/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'half_flow') {
+            timeSignature = '2/4';
+            const normalBar = [[['X','eighth'],['X','eighth']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'half_basic') {
+            timeSignature = '2/4';
+            const normalBar = [[['X','quarter']], [['X','quarter']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        } else if (pattern === 'half_double') {
+            timeSignature = '2/4';
+            const normalBar = [[['X','quarter']], [['X','eighth'],['X','eighth']]];
+            bars = [normalBar, normalBar, normalBar, normalBar];
+        }
+
+        timeSig.textContent = timeSignature;
+        const chordLabels = ['I', 'IV', 'V', 'I'];
+
+        bars.forEach((barBeats, barIndex) => {
+            const barDiv = document.createElement('div');
+            barDiv.className = 'jianpu-bar';
+            const label = document.createElement('span');
+            label.className = 'bar-label';
+            label.textContent = chordLabels[barIndex];
+            barDiv.appendChild(label);
+
+            barBeats.forEach(beatNotes => {
+                const beatDiv = document.createElement('div');
+                beatDiv.className = 'beat';
+                beatNotes.forEach(noteData => {
+                    const [symbol, duration, dashes] = noteData;
+                    const noteEl = document.createElement('span');
+                    noteEl.className = 'jianpu-note';
+                    const symbolEl = document.createElement('span');
+                    symbolEl.className = 'note-symbol';
+                    symbolEl.textContent = symbol;
+                    noteEl.appendChild(symbolEl);
+
+                    if (duration === 'eighth') noteEl.classList.add('underline-single');
+                    else if (duration === 'sixteenth') noteEl.classList.add('underline-double');
+                    else if (duration === 'half') {
+                        const dashEl = document.createElement('span');
+                        dashEl.className = 'dash-line';
+                        dashEl.textContent = ' -';
+                        noteEl.appendChild(dashEl);
+                    } else if (duration === 'whole') {
+                        for (let i = 0; i < dashes; i++) {
+                            const dashEl = document.createElement('span');
+                            dashEl.className = 'dash-line';
+                            dashEl.textContent = ' -';
+                            noteEl.appendChild(dashEl);
+                        }
+                    }
+                    beatDiv.appendChild(noteEl);
+                });
+                barDiv.appendChild(beatDiv);
+            });
+            display.appendChild(barDiv);
+        });
+    }
+
+    // --- 播放逻辑 ---
+    let isPlaying = false;
+    let isPaused = false;
+    let currentStepIndex = 0;
+    let steps = [];
+    let currentKey = 'C';
+    let currentPattern = 'arpeggio_7';
+    let timeoutId = null;
+
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const keySelect = document.getElementById('keySelect');
+    const patternSelect = document.getElementById('patternSelect');
+
+    function playStep(index) {
+        if (index >= steps.length) {
+            isPlaying = false;
+            isPaused = false;
+            currentStepIndex = 0;
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            playBtn.textContent = '▶ 开始演示';
+            pauseBtn.textContent = '⏸ 暂停';
+            return;
+        }
+
+        const step = steps[index];
+        if (!step.midis || step.midis.length === 0 || step.midis[0] === null) {
+            timeoutId = setTimeout(() => {
+                if (!isPaused) {
+                    currentStepIndex = index + 1;
+                    playStep(currentStepIndex);
+                }
+            }, step.duration);
+            return;
+        }
+
+        const visualDuration = step.duration * 0.6;
+        step.midis.forEach(midi => {
+            highlightKey(midi, visualDuration);
+            playNote(midi, step.duration / 1000 + 0.05, 0.25);
+        });
+
+        timeoutId = setTimeout(() => {
+            if (!isPaused) {
+                currentStepIndex = index + 1;
+                playStep(currentStepIndex);
+            }
+        }, step.duration);
+    }
+
+    async function startPlayback() {
+        if (isPlaying && !isPaused) return;
+        initAudio();
+        const selectedKey = keySelect.value;
+        const selectedPattern = patternSelect.value;
+
+        if (isPaused && selectedKey === currentKey && selectedPattern === currentPattern) {
+            isPaused = false;
+            playBtn.textContent = '演示中...';
+            pauseBtn.textContent = '⏸ 暂停';
+            pauseBtn.disabled = false;
+            playBtn.disabled = true;
+            playStep(currentStepIndex);
+            return;
+        }
+
+        isPlaying = true;
+        isPaused = false;
+        currentStepIndex = 0;
+        currentKey = selectedKey;
+        currentPattern = selectedPattern;
+        steps = generatePatternSteps(currentKey, currentPattern);
+
+        document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+        playBtn.disabled = true;
+        pauseBtn.disabled = false;
+        playBtn.textContent = '演示中...';
+        pauseBtn.textContent = '⏸ 暂停';
+        playStep(0);
+    }
+
+    function togglePause() {
+        if (!isPlaying) return;
+        if (isPaused) {
+            isPaused = false;
+            pauseBtn.textContent = '⏸ 暂停';
+            playStep(currentStepIndex);
+        } else {
+            isPaused = true;
+            pauseBtn.textContent = '▶ 继续';
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+        }
+    }
+
+    function onSelectionChange() {
+        renderRhythm(keySelect.value, patternSelect.value);
+        if (isPlaying && isPaused) {
+            isPlaying = false;
+            isPaused = false;
+            currentStepIndex = 0;
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            playBtn.textContent = '▶ 开始演示';
+            pauseBtn.textContent = '⏸ 暂停';
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+        } else if (isPlaying && !isPaused) {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+            isPlaying = false;
+            isPaused = false;
+            currentStepIndex = 0;
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            playBtn.textContent = '▶ 开始演示';
+            pauseBtn.textContent = '⏸ 暂停';
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        buildPiano();
+        playBtn.addEventListener('click', startPlayback);
+        pauseBtn.addEventListener('click', togglePause);
+        keySelect.addEventListener('change', onSelectionChange);
+        patternSelect.addEventListener('change', onSelectionChange);
+        renderRhythm(keySelect.value, patternSelect.value);
+        document.body.addEventListener('click', () => {
+            initAudio();
+        }, { once: true });
+    });
+</script>
+</body>
+</html>
